@@ -1,0 +1,25 @@
+{
+  "name": "hot-top-pick",
+  "version": "1.0.0",
+  "description": "Aggregates top trending posts from several social media websites under a single keyword",
+  "main": "request.js",
+  "scripts": {
+    "test": "request"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgnjn/hot-top-pick.git"
+  },
+  "keywords": [
+    "twitter"
+  ],
+  "author": "mgnjn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgnjn/hot-top-pick/issues"
+  },
+  "homepage": "https://github.com/mgnjn/hot-top-pick#readme",
+  "dependencies": {
+    "twitter": "^1.7.1"
+  }
+}
