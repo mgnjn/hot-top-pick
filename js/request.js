@@ -1,4 +1,6 @@
-var config = require('./config.js');
+require('dotenv').config()
+
+const consumer_key = process.env.API_KEY;
 const Twitter = require('twitter');
 var T = new Twitter(config);
 
