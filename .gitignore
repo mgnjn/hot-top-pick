@@ -1,1 +1,6 @@
 *.env 
+
+config.js
+playground.js
+try1.js
+try2.js
