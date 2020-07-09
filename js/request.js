@@ -1,12 +1,7 @@
-var Twit = require('twit');
-var config = require('./config');
-var client = new Twit(config);
+const express = require('express');
+const app = express();
+const port = 3000;
 
-client.get('search/tweets', { q: 'BLM', count: 100 }, getData);
+app.get('/', (req, res) => res.send('Hello World!'));
 
-function getData(err, data, response) {
-    var tweets = data.statuses;
-    for (var i = 0; i < tweets.length; i++) {
-        console.log(tweets[i].text);
-    }
-}
+app.listen(port, () => console.log(`Port is open; listening at http: //localhost:${port}`));

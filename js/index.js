@@ -7,14 +7,12 @@
 // const myForm = document.querySelector("#main-form");
 // const myInput = document.querySelector("#main-input");
 
+
+var myForm = document.querySelector('#main-form');
 var param = "";
-let searchURL = `Something`;
-console.log(`'${searchURL}'`);
 
-// myForm.addEventListener('submit', onSubmit);
-
-// function onSubmit(e) {
-//     e.preventDefault();
-//     param = myInput.value;
-//     console.log(param);
-// }
+myForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    param = document.getElementById('main-input').value;
+    console.log(param + "hello");
+});
