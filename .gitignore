@@ -1,5 +1,3 @@
-# ignore tself
-gitignore
 
 # environment variables
 *.env
@@ -10,5 +8,5 @@ config.js
 playground.js
 
 # directories
-node_modules/
-logs/
+node_modules
+logs
