@@ -6,6 +6,7 @@
 try?.js
 config.js
 playground.js
+copyOfIndex.js
 
 # directories
 /node_modules/**
