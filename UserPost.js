@@ -1,8 +1,14 @@
-function userPost(name, text, icon) {
+/**
+ * Creates a post for a user, adapatable for any social media website
+ * @param {*} name 
+ * @param {*} text 
+ * @param {*} popularity 
+ */
+function userPost(name, text, textPop) {
     var userPostJSON = {
         userName: name,
         userText: text,
-        userIcon: icon
+        userPostPopularity: textPop,
     }
     return userPostJSON;
 }

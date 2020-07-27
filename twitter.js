@@ -1,47 +1,61 @@
 // This handles all requests for Twitter 
 // Returns: JSON array of all Twitter posts 
 // ----------------------------------------------------
+require('dotenv').config();
 
+// Set up Twitter
+var Twit = require('twit');
+var T = new Twit({
+    consumer_key: process.env.API_KEY,
+    consumer_secret: process.env.API_SECRET_KEY,
+    access_token: process.env.ACCESS_TOKEN,
+    access_token_secret: process.env.ACCESS_TOKEN_SECRET
+});
 
-// Contains details of a single user post 
+function getTwitterPosts(array) {
+    T.get('search/tweets', { q: this.keyword, count: 4 }, function(error, data, response) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+        for (var i = 0; i < data.statuses.length; i++) {
+            var user = new UserPost(data.statuses[i].user.screen_name, data.statuses[i].text, data.statuses[i].retweet_count);
+            array.push(user);
+        }
+    });
+}
+// Creates a post for a single user
 var UserPost = require('./UserPost.js');
+var user0 = new UserPost(null, null, null, null);
+// Twitter class
+class Twitter {
+    constructor(keyword) {
+        this.keyword = keyword;
+        this.type = "twitter";
+        this.posts = [user0];
+    }
 
-// Getting keyword
-var search = require('./search.js');
-var keyword = search.keyword;
+    static addToPosts(newUser) {
+        this.posts.push(newUser);
+    }
 
-// create a sample user post
-var user1 = new UserPost('FirstName', keyword, 'hello', null);
+    setPosts() {
+        var tweets = getTwitterPosts(this.posts);
+        console.log(tweets);
+    }
 
-// var Twit = require('twit');
-// var T = new Twit({
-//     consumer_key: process.env.API_KEY,
-//     consumer_secret: process.env.API_SECRET_KEY,
-//     access_token: process.env.ACCESS_TOKEN,
-//     access_token_secret: process.env.ACCESS_TOKEN_SECRET
-// });
+    getKeyword() {
+        return this.keyword;
+    }
 
-// var tweets = [];
+    getPosts() {
+        return this.posts;
+    }
 
-// // Post the param
-// T.get('/', (req, res) => {
-//     parameter.keyword = req.body.keyword;
-//     console.log(`Searching for keyword: ${parameter.keyword}`);
-//     // Twitter search
-//     T.get('search/tweets', {
-//         q: parameter.keyword,
-//         // for now we just set up a temporary max count. arbitrarily, it's set to 3
-//         count: 100
-//     }, function(error, data, response) {
-//         if (error) throw error;
-//         var dataTwts = data.statuses;
-//         for (var i = 0; i < dataTwts.length; i++) {
-//             tweets[i] = dataTwts[i].text;
-//             console.log(dataTwts[i].text);
-//         }
-//     });
-//     // Redirect with tweets embedded into html
-//     res.send('Hello');
-// });
+    getPostType() {
+        return this.type;
+    }
+}
 
-module.exports = user1;
+// Stores users along with their tweets
+module.exports = Twitter;
