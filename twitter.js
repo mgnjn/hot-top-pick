@@ -12,20 +12,9 @@ var T = new Twit({
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
-function getTwitterPosts(array) {
-    T.get('search/tweets', { q: this.keyword, count: 4 }, function(error, data, response) {
-        if (error) {
-            console.log(error);
-            return;
-        }
-        for (var i = 0; i < data.statuses.length; i++) {
-            var user = new UserPost(data.statuses[i].user.screen_name, data.statuses[i].text, data.statuses[i].retweet_count);
-            array.push(user);
-        }
-    });
-}
 // Creates a post for a single user
 var UserPost = require('./UserPost.js');
+const { response } = require('express');
 var user0 = new UserPost(null, null, null, null);
 // Twitter class
 class Twitter {
@@ -34,14 +23,40 @@ class Twitter {
         this.type = "twitter";
         this.posts = [user0];
     }
+    async setPosts() {
+        var array = [];
 
-    static addToPosts(newUser) {
-        this.posts.push(newUser);
-    }
+        async function getTwitterPosts(keyword) {
+            T.get('search/tweets', { q: keyword, count: 4 }, function(error, data, response) {
+                if (error) {
+                    console.log(error);
+                    return;
+                }
+                for (var i = 0; i < data.statuses.length; i++) {
+                    var user = new UserPost(data.statuses[i].user.screen_name, data.statuses[i].text, data.statuses[i].retweet_count);
+                    array.push(user);
+                }
+                setConstructor(array);
+                console.log("1");
+            });
+        }
 
-    setPosts() {
-        var tweets = getTwitterPosts(this.posts);
-        console.log(tweets);
+        function setConstructor(array) {
+            Twitter.prototype.posts = array;
+            console.log("2");
+        }
+
+        async function processData(keyword) {
+            try {
+                await getTwitterPosts(keyword);
+                console.log("3");
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        processData(this.keyword);
+
     }
 
     getKeyword() {
@@ -59,3 +74,14 @@ class Twitter {
 
 // Stores users along with their tweets
 module.exports = Twitter;
+
+/**
+ * if (error) {
+            console.log(error);
+            return;
+        }
+        for (var i = 0; i < data.statuses.length; i++) {
+            var user = new UserPost(data.statuses[i].user.screen_name, data.statuses[i].text, data.statuses[i].retweet_count);
+            array.push(user);
+        }
+    */
