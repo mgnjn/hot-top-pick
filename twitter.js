@@ -16,6 +16,7 @@ var T = new Twit({
 var UserPost = require('./UserPost.js');
 const { response } = require('express');
 var user0 = new UserPost(null, null, null, null);
+
 // Twitter class
 class Twitter {
     constructor(keyword) {
@@ -23,40 +24,30 @@ class Twitter {
         this.type = "twitter";
         this.posts = [user0];
     }
-    async setPosts() {
-        var array = [];
 
-        async function getTwitterPosts(keyword) {
-            T.get('search/tweets', { q: keyword, count: 4 }, function(error, data, response) {
-                if (error) {
-                    console.log(error);
-                    return;
-                }
-                for (var i = 0; i < data.statuses.length; i++) {
-                    var user = new UserPost(data.statuses[i].user.screen_name, data.statuses[i].text, data.statuses[i].retweet_count);
+    /**
+     * Promise resolves Twit's get requests
+     * Returns: the array of UserPosts containing tweets
+     */
+    async twitGetPosts() {
+        var maxCount = 4;
+        // We need to resolve the get reqest from Twit first
+        var array = await Promise.resolve(T.get('search/tweets', { q: keyword, count: maxCount }))
+            // post-resolution is handled HERE. We want to add the tweets to an array and return this array 
+            // we set the Twitter.posts to the array
+            .then(function(result) {
+                var array = [];
+                for (var i = 0; i < result.data.statuses.length; i++) {
+                    var user = new UserPost(result.data.statuses[i].user.screen_name, result.data.statuses[i].text, result.data.statuses[i].retweet_count);
                     array.push(user);
                 }
-                setConstructor(array);
-                console.log("1");
-            });
-        }
-
-        function setConstructor(array) {
-            Twitter.prototype.posts = array;
-            console.log("2");
-        }
-
-        async function processData(keyword) {
-            try {
-                await getTwitterPosts(keyword);
-                console.log("3");
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        processData(this.keyword);
-
+                return array;
+            })
+            .catch(error => console.log(error))
+        return array;
+    }
+    async setPosts() {
+        this.posts = await this.twitGetPosts();
     }
 
     getKeyword() {
@@ -72,16 +63,4 @@ class Twitter {
     }
 }
 
-// Stores users along with their tweets
 module.exports = Twitter;
-
-/**
- * if (error) {
-            console.log(error);
-            return;
-        }
-        for (var i = 0; i < data.statuses.length; i++) {
-            var user = new UserPost(data.statuses[i].user.screen_name, data.statuses[i].text, data.statuses[i].retweet_count);
-            array.push(user);
-        }
-    */

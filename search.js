@@ -16,6 +16,7 @@ router.post('/', function(req, res) {
     // obtain twitter posts 
     twitInstance = new Twitter(keyword);
     twitInstance.setPosts();
+    console.log(twitInstance.type);
 
     // search the websites given the keyword
     // store the results
