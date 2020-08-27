@@ -8,6 +8,7 @@ config.js
 playground.js
 copyOfIndex.js
 tempCodeRunnerFile.js
+practice*
 
 # directories
 /node_modules/**

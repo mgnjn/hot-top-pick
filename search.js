@@ -1,11 +1,14 @@
-// Express stuff
+// Express config
 var express = require('express');
 var router = express.Router();
 
-// social media websites modules
+// Twitter
 var Twitter = require('./twitter');
 var twitInstance;
+var twitPosts;
 
+// global 
+let maxCount = 4;
 let keyword = null;
 
 // POST a keyword for a search
@@ -13,13 +16,15 @@ router.post('/', function(req, res) {
 
     keyword = validateKeyword(req.body.keyword);
 
-    // obtain twitter posts 
-    twitInstance = new Twitter(keyword);
-    twitInstance.setPosts();
-    console.log(twitInstance.type);
+    var twitUserInfo = [];
+    twitInstance = new Twitter(keyword, maxCount);
+    twitPosts = twitInstance.getPosts();
+    // receive array of promises
+    // twitPosts.then((result) =>
+    //     console.log(result[0].userName));
 
-    // search the websites given the keyword
-    // store the results
+    // res.render('practice', { keyword: keyword, twitPosts: twitPosts, maxCount: maxCount });
+
 })
 
 /**

@@ -2,6 +2,7 @@
 // Returns: JSON array of all Twitter posts 
 // ----------------------------------------------------
 require('dotenv').config();
+let search = require('./search');
 
 // Set up Twitter
 var Twit = require('twit');
@@ -19,7 +20,8 @@ var user0 = new UserPost(null, null, null, null);
 
 // Twitter class
 class Twitter {
-    constructor(keyword) {
+    constructor(keyword, maxCount) {
+        this.maxCount = maxCount;
         this.keyword = keyword;
         this.type = "twitter";
         this.posts = [user0];
@@ -29,14 +31,11 @@ class Twitter {
      * Promise resolves Twit's get requests
      * Returns: the array of UserPosts containing tweets
      */
-    async twitGetPosts() {
-        var maxCount = 4;
-        // We need to resolve the get reqest from Twit first
-        var array = await Promise.resolve(T.get('search/tweets', { q: keyword, count: maxCount }))
-            // post-resolution is handled HERE. We want to add the tweets to an array and return this array 
-            // we set the Twitter.posts to the array
+    async setPosts() {
+
+        var array = [];
+        var promiseArray = await T.get('search/tweets', { q: keyword, count: this.maxCount })
             .then(function(result) {
-                var array = [];
                 for (var i = 0; i < result.data.statuses.length; i++) {
                     var user = new UserPost(result.data.statuses[i].user.screen_name, result.data.statuses[i].text, result.data.statuses[i].retweet_count);
                     array.push(user);
@@ -44,17 +43,15 @@ class Twitter {
                 return array;
             })
             .catch(error => console.log(error))
-        return array;
-    }
-    async setPosts() {
-        this.posts = await this.twitGetPosts();
+        return promiseArray;
     }
 
     getKeyword() {
         return this.keyword;
     }
 
-    getPosts() {
+    async getPosts() {
+        this.posts = await this.setPosts();
         return this.posts;
     }
 

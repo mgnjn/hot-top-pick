@@ -5,7 +5,9 @@
     "main": "request.js",
     "scripts": {
         "start": "npm app",
-        "dev": "nodemon app"
+        "classTest": "nodemon classA",
+        "dev": "nodemon app",
+        "debug": "node inspect app"
     },
     "repository": {
         "type": "git",
@@ -24,6 +26,7 @@
         "axios": "^0.19.2",
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",
+        "ejs": "^3.1.5",
         "express": "^4.17.1",
         "express-validator": "^6.6.0",
         "twit": "^2.2.11",
