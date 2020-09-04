@@ -15,15 +15,29 @@ let keyword = null;
 router.post('/', function(req, res) {
 
     keyword = validateKeyword(req.body.keyword);
-
-    var twitUserInfo = [];
     twitInstance = new Twitter(keyword, maxCount);
-    twitPosts = twitInstance.getPosts();
-    // receive array of promises
-    // twitPosts.then((result) =>
-    //     console.log(result[0].userName));
-
-    // res.render('practice', { keyword: keyword, twitPosts: twitPosts, maxCount: maxCount });
+    // // twitPosts is a promise that contains an array of promises (tweets). i.e. each tweet is stored in the set tweets
+    twitInstance.getPosts()
+        .then(function(tweets) {
+            var twitUsers = [];
+            tweets.forEach((tweet) => {
+                tweet.then((value) => {
+                    // for each tweet stored in the set of tweets, we are storing all the info related to a single tweet such as the username and the actual tweet to a single user. 
+                    // TODO: clean it up using UserPost.js
+                    var user;
+                    user = {
+                        name: value.userName,
+                        text: value.userText,
+                    }
+                    twitUsers.push(user);
+                })
+            })
+            return twitUsers;
+        })
+        .then(function(result) {
+            var twitUsers = result;
+            res.render('index', { keyword: keyword, users: twitUsers, maxCount: maxCount });
+        })
 
 })
 

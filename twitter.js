@@ -34,7 +34,8 @@ class Twitter {
     async setPosts() {
 
         var array = [];
-        var promiseArray = await T.get('search/tweets', { q: keyword, count: this.maxCount })
+        // Get the tweets 
+        var results = await T.get('search/tweets', { q: keyword, count: this.maxCount })
             .then(function(result) {
                 for (var i = 0; i < result.data.statuses.length; i++) {
                     var user = new UserPost(result.data.statuses[i].user.screen_name, result.data.statuses[i].text, result.data.statuses[i].retweet_count);
@@ -43,7 +44,14 @@ class Twitter {
                 return array;
             })
             .catch(error => console.log(error))
-        return promiseArray;
+
+        // Create a set of promises
+        var set = []
+        var promises = results.map(function(obj) {
+            var arr = Promise.resolve(obj);
+            set.push(arr);
+        });
+        return set;
     }
 
     getKeyword() {
