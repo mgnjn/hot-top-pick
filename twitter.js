@@ -1,5 +1,5 @@
 // This handles all requests for Twitter 
-// Returns: JSON array of all Twitter posts 
+// Returns: an array of Promises constaining Twitter posts
 // ----------------------------------------------------
 require('dotenv').config();
 let search = require('./search');
